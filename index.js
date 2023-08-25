@@ -113,7 +113,6 @@ app.post("/login", async (req, res) => {
 // Middleware for verifying JWT tokens
 const verifyToken = (req, res, next) => {
   const token = req.headers.authorization;
-  console.log(token);
 
   if (!token) {
     return res.status(401).json({ error: "Unauthorized" });
@@ -193,15 +192,18 @@ app.delete("/todos/:id", verifyToken, async (req, res) => {
     // Find the todo by ID and user ID
     const todo = await Todo.findOne({ _id: todoId, userId: req.userId });
 
+    console.log(todo);
+
     if (!todo) {
       return res.status(404).json({ error: "Todo not found" });
     }
 
     // Delete the todo
-    await todo.remove();
+    await Todo.deleteOne({ _id: todoId });
 
     res.json({ message: "Todo deleted successfully" });
   } catch (err) {
+    console.log(err);
     res.status(500).json({ error: "Error deleting todo" });
   }
 });
