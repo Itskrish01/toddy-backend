@@ -185,6 +185,24 @@ app.put("/todos/:id", verifyToken, async (req, res) => {
   }
 });
 
+app.get("/todos/:todoId", verifyToken, async (req, res) => {
+  try {
+    const todoId = req.params.todoId;
+
+    // Find the todo by ID and user ID
+    const todo = await Todo.findOne({ _id: todoId, userId: req.userId });
+
+    if (!todo) {
+      return res.status(404).json({ error: "Todo not found" });
+    }
+
+    // Return the todo's information
+    res.json(todo);
+  } catch (err) {
+    res.status(500).json({ error: "Error fetching todo" });
+  }
+});
+
 app.delete("/todos/:id", verifyToken, async (req, res) => {
   try {
     const todoId = req.params.id;
