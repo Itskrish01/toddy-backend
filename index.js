@@ -208,6 +208,23 @@ app.delete("/todos/:id", verifyToken, async (req, res) => {
   }
 });
 
+app.get("/current-user", verifyToken, async (req, res) => {
+  try {
+    // Find the current user by their userId
+    const user = await User.findById(req.userId);
+
+    if (!user) {
+      return res.status(404).json({ error: "User not found" });
+    }
+
+    // Return the user's information, excluding the password
+    const { _id, username, email } = user;
+    res.json({ _id, username, email });
+  } catch (err) {
+    res.status(500).json({ error: "Error fetching current user" });
+  }
+});
+
 connectDB().then(() => {
   app.listen(PORT, () => {
     console.log("Listening for requests");
